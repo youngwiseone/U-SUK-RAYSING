@@ -9,7 +9,7 @@ import (
 	"grate/geom"
 	"grate/game"
 	"grate/graphics"
-	//"grate/math/random"
+	"grate/math/random"
 )
 
 type RoadTile struct {
@@ -25,9 +25,31 @@ type Road struct {
 	Next *Road
 }
 
+const Left, Right = false, true
+
+var NextAngle = random.Number(90)*1/180*π + π/2
+var Going = Right
+
 func RandomRoadTile(base RoadTile) RoadTile {
 	size := graphics.Image("data/roadtile-1.png").Size
-	angle := base.Angle+π/80
+	angle := base.Angle
+	
+	if base.Angle.F32() < NextAngle.F32() {
+		if Going == Right {
+			angle += π/80
+		} else {
+			NextAngle = random.Number(90)*1/180*π + π/2
+		}
+	} 
+	
+	if base.Angle.F32() > NextAngle.F32() {
+		if Going == Left {
+			angle -= π/80
+		} else {
+			NextAngle = -random.Number(90)*1/180*π + π/2
+		}
+	}
+	
 	return RoadTile {
 		Pos: base.Pos-size.Y()*geom.Angle(base.Angle)+5*y*geom.Angle(base.Angle),
 		Type: (base.Type+1)%6,
@@ -54,7 +76,7 @@ func (road *Road) Init() {
 
 var count = 0
 
-func (road *Road) Travel(speed geom.Number) {
+func (road *Road) Travel(speed, angle geom.Number) {
 
 	var track = road
 	var last *Road
@@ -73,6 +95,7 @@ func (road *Road) Travel(speed geom.Number) {
 		road = road.Next
 		
 		road.Pos += speed*y
+		road.Angle -= angle
 		
 		//WHAT THE HELL, HACK ALERT, DO NOT TRY AND FIGURE THIS OUT!
 		if road.Pos.Y().Int()-road.Pos.X().Int() > game.Height().Int() && road.Pos.X().Int() > 0 {
@@ -82,7 +105,7 @@ func (road *Road) Travel(speed geom.Number) {
 			track.Next.Next = road
 			
 			last.Next = nil
-			track.Travel(0)
+			track.Travel(0, 0)
 			return
 		}
 	}

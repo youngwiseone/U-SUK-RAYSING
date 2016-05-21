@@ -36,7 +36,7 @@ func update() {
 		game.End()
 	}
 	Player.Update()
-	RaceTrack.Travel(Player.Speed*game.DeltaTime())
+	RaceTrack.Travel(Player.Speed*game.DeltaTime(), Player.Angle)
 	
 	ScrollingBackground = smooth.Move(ScrollingBackground, 1i*Player.Speed)
 	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
