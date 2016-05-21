@@ -9,7 +9,7 @@ import (
 	"grate/geom"
 	"grate/game"
 	"grate/graphics"
-	"grate/math/random"
+	//"grate/math/random"
 )
 
 type RoadTile struct {
@@ -27,9 +27,9 @@ type Road struct {
 
 func RandomRoadTile(base RoadTile) RoadTile {
 	size := graphics.Image("data/roadtile-1.png").Size
-	angle := base.Angle+(random.Number(3)-2)*π/80
+	angle := base.Angle+π/80
 	return RoadTile {
-		Pos: base.Pos-size.Y()*geom.Angle(base.Angle),
+		Pos: base.Pos-size.Y()*geom.Angle(base.Angle)+5*y*geom.Angle(base.Angle),
 		Type: (base.Type+1)%6,
 		Angle: angle,
 	}
