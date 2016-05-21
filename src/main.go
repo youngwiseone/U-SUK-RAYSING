@@ -4,8 +4,13 @@ import "grate/graphics"
 import "grate/graphics/text"
 import "grate/game"
 import "grate/input"
+import (
+	"grate/smooth"
+	"grate/geom"
+)
 
 var Player = new(Car)
+var ScrollingBackground geom.Number
 
 func init() {
 	game.Fullscreen = true
@@ -13,10 +18,13 @@ func init() {
 
 func load() {
 	graphics.LoadImage("data/car.png")
+	graphics.LoadImage("data/road.png")
+	
 	Player.Speed = 500
 	Player.Pos = 200 + 300*y
 	
 	graphics.SetBackgroundColor(graphics.Green)
+	
 }
 
 func update() {
@@ -24,9 +32,20 @@ func update() {
 		game.End()
 	}
 	Player.Update()
+	
+	ScrollingBackground = smooth.Move(ScrollingBackground, 100i)
+	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
+		ScrollingBackground = 0
+	}
 }
 
 func draw() {
+	width := graphics.Image("data/road.png").Size.X()/2
+	graphics.Image("data/road.png").
+		Tile(width+ScrollingBackground-game.Height(), width+game.Height())
+	graphics.Image("data/road.png").
+		Tile(width+ScrollingBackground, width+game.Height())
+
 	text.PrintCenter("This will be a racing game! (Press ESC to Quit)")
 	Player.Draw()
 }
