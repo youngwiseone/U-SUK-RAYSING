@@ -20,8 +20,8 @@ func load() {
 	graphics.LoadImage("data/car.png")
 	graphics.LoadImage("data/road.png")
 	
-	Player.Speed = 500
-	Player.Pos = 200 + 300*y
+	Player.Speed = 0
+	Player.Pos = 400 + 300*y
 	
 	graphics.SetBackgroundColor(graphics.Green)
 	
@@ -33,7 +33,7 @@ func update() {
 	}
 	Player.Update()
 	
-	ScrollingBackground = smooth.Move(ScrollingBackground, 100i)
+	ScrollingBackground = smooth.Move(ScrollingBackground, 1i*Player.Speed)
 	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
 		ScrollingBackground = 0
 	}
