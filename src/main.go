@@ -59,9 +59,9 @@ func update() {
 	}
 
 	if game.Over {
-		if Player.Speed.Int() > 100 {
+		if Player.Speed.Int() > 100*6 {
 			Player.Pos = smooth.Move(Player.Pos, geom.Angle(DeathVec)*Player.Speed/2)
-			Player.Angle = smooth.Move(Player.Angle, 2*π)
+			Player.Angle = smooth.Move(Player.Angle, 2*π*Player.Speed/500)
 		}
 		return
 	}
