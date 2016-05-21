@@ -39,6 +39,15 @@ func load() {
 		if key == input.KeyTab {
 			Debug = !Debug
 		}
+		
+		if game.Over && key == input.KeyR {
+			RaceTrack = new(Road)
+			RaceTrack.Init()
+			Player = new(Car)
+			Player.Pos = game.Height()/2 + 500
+			game.Over = false
+			camera.Track(&Player.Pos)
+		}
 	})
 }
 
@@ -80,10 +89,14 @@ func draw() {
 	camera.Stop()
 	
 	text.Print(0, "Kph:",Player.Speed.Int()/6)	
-	text.Print(game.Width()-text.CurrentFont().Width("(Press Tab to debug!)"), "(Press Tab to debug!)")	
+		
 	
 	if game.Over {
 		text.PrintCenter("U SUK @ RAYSING!")
+		text.Print(game.Width()-text.CurrentFont().Width("(Press R to restart!)"), "(Press R to restart!)")
+		
+	} else {
+		text.Print(game.Width()-text.CurrentFont().Width("(Press Tab to debug!)"), "(Press Tab to debug!)")
 	}
 	
 }
