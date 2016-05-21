@@ -34,16 +34,14 @@ func RandomRoadTile(base RoadTile) RoadTile {
 	size := graphics.Image("data/roadtile-1.png").Size
 	angle := base.Angle
 	
-	if base.Angle.F32()+ π/2 < NextAngle.F32() {
+	if base.Angle.F32()+ π/2 <= NextAngle.F32() {
 		if Going == Right {
 			angle += π/80
 		} else {
 			NextAngle = random.Number(45)*1/180*π + π/2
 			Going = Right
 		}
-	} 
-	
-	if base.Angle.F32()+ π/2 > NextAngle.F32() {
+	} else if base.Angle.F32()+ π/2 > NextAngle.F32() {
 		if Going == Left {
 			angle -= π/80
 		} else {
