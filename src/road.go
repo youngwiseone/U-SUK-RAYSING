@@ -27,10 +27,11 @@ type Road struct {
 
 func RandomRoadTile(base RoadTile) RoadTile {
 	size := graphics.Image("data/roadtile-1.png").Size
+	angle := base.Angle+(random.Number(3)-2)*π/80
 	return RoadTile {
-		Pos: base.Pos-size.Y(),
+		Pos: base.Pos-size.Y()*geom.Angle(base.Angle),
 		Type: (base.Type+1)%6,
-		Angle: base.Angle+(random.Number(3)-2)*π/40,
+		Angle: angle,
 	}
 }
 
