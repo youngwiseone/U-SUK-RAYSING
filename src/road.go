@@ -49,13 +49,15 @@ func (road *Road) Travel(speed geom.Number) {
 		
 		road.Pos += speed*y
 		
-		if road.Pos.Y().Int() > game.Height().Int() {
+		//WHAT THE HELL, HACK ALERT, DO NOT TRY AND FIGURE THIS OUT!
+		if road.Pos.Y().Int() > game.Height().Int() && road.Pos.X().Int() > 0 {
 			road.Next = track.Next.Next
-			road.RoadTile = RoadTile{ Pos: track.Next.Next.Next.Pos-size.Y() }
+			road.RoadTile = RoadTile{ Pos: track.Next.Next.Pos-size.Y() }
 			
 			track.Next.Next = road
 			
 			last.Next = nil
+			track.Travel(0)
 			return
 		}
 	}
