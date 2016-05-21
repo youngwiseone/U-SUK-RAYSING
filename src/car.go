@@ -2,7 +2,6 @@ package main
 
 import "grate/geom"
 import "grate/graphics"
-import "grate/graphics/text"
 import "grate/input"
 import "grate/smooth"
 
@@ -52,7 +51,6 @@ func (car *Car) Update() {
 }
 
 func (car *Car) Draw() {
-	text.Print(0, "Kph:",car.Speed.Int()/6)	
 	graphics.Image("data/car.png").
 		DrawRotated(car.Pos, geom.Angle(car.Angle))
 }

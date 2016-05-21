@@ -3,6 +3,7 @@ package main
 import "grate/graphics"
 import "grate/graphics/text"
 import "grate/game"
+import "grate/game/camera"
 import "grate/input"
 
 import (
@@ -29,6 +30,8 @@ func load() {
 	graphics.SetBackgroundColor(graphics.Green)
 
 	RaceTrack.Init()
+	
+	camera.Track(&Player.Pos)
 }
 
 func update() {
@@ -42,6 +45,8 @@ func update() {
 	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
 		ScrollingBackground = 0
 	}
+	
+	camera.Update()
 }
 
 func draw() {
@@ -51,10 +56,15 @@ func draw() {
 	//graphics.Image("data/road.png").
 		//Tile(width+ScrollingBackground, width+game.Height())
 	
-	RaceTrack.Draw(0)
+	camera.Start()
+	{
+		RaceTrack.Draw(0)
 	
-	Player.Draw()
+		Player.Draw()
+	}
+	camera.Stop()
 	
+	text.Print(0, "Kph:",Player.Speed.Int()/6)	
 		text.PrintCenter("This will be a racing game! (Press ESC to Quit)", count)
 	
 }

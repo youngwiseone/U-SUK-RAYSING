@@ -27,26 +27,28 @@ type Road struct {
 
 const Left, Right = false, true
 
-var NextAngle = random.Number(90)*1/180*π + π/2
+var NextAngle = random.Number(45)*1/180*π + π/2
 var Going = Right
 
 func RandomRoadTile(base RoadTile) RoadTile {
 	size := graphics.Image("data/roadtile-1.png").Size
 	angle := base.Angle
 	
-	if base.Angle.F32() < NextAngle.F32() {
+	if base.Angle.F32()+ π/2 < NextAngle.F32() {
 		if Going == Right {
 			angle += π/80
 		} else {
-			NextAngle = random.Number(90)*1/180*π + π/2
+			NextAngle = random.Number(45)*1/180*π + π/2
+			Going = Right
 		}
 	} 
 	
-	if base.Angle.F32() > NextAngle.F32() {
+	if base.Angle.F32()+ π/2 > NextAngle.F32() {
 		if Going == Left {
 			angle -= π/80
 		} else {
-			NextAngle = -random.Number(90)*1/180*π + π/2
+			NextAngle = -random.Number(45)*1/180*π + π/2
+			Going = Left
 		}
 	}
 	
@@ -95,7 +97,6 @@ func (road *Road) Travel(speed, angle geom.Number) {
 		road = road.Next
 		
 		road.Pos += speed*y
-		road.Angle -= angle
 		
 		//WHAT THE HELL, HACK ALERT, DO NOT TRY AND FIGURE THIS OUT!
 		if road.Pos.Y().Int()-road.Pos.X().Int() > game.Height().Int() && road.Pos.X().Int() > 0 {
