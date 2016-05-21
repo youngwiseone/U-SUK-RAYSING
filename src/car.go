@@ -25,14 +25,14 @@ func (car *Car) Update() {
 		return
 	}
 	if input.KeyIsDown(input.KeyA) || input.KeyIsDown(input.KeyLeft) {
-		car.Pos = smooth.Move(car.Pos, -car.Speed/2)
-		car.Angle = smooth.Move(car.Angle, -π/2*car.Speed/100)
+		car.Pos = smooth.Move(car.Pos, -150 -car.Speed/40)
+		car.Angle = smooth.Move(car.Angle, -π/2*car.Speed/120)
 		if car.Angle.F32() < -π/10 {
 			car.Angle = -π/10 
 		}
 	} else if input.KeyIsDown(input.KeyD) || input.KeyIsDown(input.KeyRight) {
-		car.Pos = smooth.Move(car.Pos, car.Speed/2)
-		car.Angle = smooth.Move(car.Angle, π/2*car.Speed/100)
+		car.Pos = smooth.Move(car.Pos, 150 + car.Speed/40)//changed car.Speed/
+		car.Angle = smooth.Move(car.Angle, π/2*car.Speed/120)
 		if car.Angle.F32() > π/10 {
 			car.Angle = π/10
 		}
