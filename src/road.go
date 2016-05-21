@@ -55,7 +55,6 @@ func (road *Road) Init() {
 var count = 0
 
 func (road *Road) Travel(speed geom.Number) {
-	size := graphics.Image("data/roadtile-1.png").Size
 
 	var track = road
 	var last *Road
@@ -63,7 +62,7 @@ func (road *Road) Travel(speed geom.Number) {
 	if track.Next.Next.Pos.Y().F32() > 0 {
 		track.Next.Next = &Road{
 			Next: track.Next.Next,
-			RoadTile: RoadTile{ Pos: track.Next.Next.Pos-size.Y() },
+			RoadTile: RandomRoadTile(track.Next.Next.RoadTile),
 		}
 	}
 	
