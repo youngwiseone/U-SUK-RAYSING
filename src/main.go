@@ -51,17 +51,24 @@ func load() {
 	})
 }
 
+var DeathVec geom.Number
+
 func update() {
 	if input.KeyIsDown(input.KeyEscape) {
 		game.End()
 	}
 
 	if game.Over {
+		if Player.Speed.Int() > 100 {
+			Player.Pos = smooth.Move(Player.Pos, geom.Angle(DeathVec)*Player.Speed/2)
+			Player.Angle = smooth.Move(Player.Angle, 2*π)
+		}
 		return
 	}
 	Player.Update()
 	
 	if RaceTrack.Travel(Player.Pos, Player.Speed, Player.Angle) {
+		DeathVec = Player.Angle-π/2
 		game.Over = true
 	}
 	
