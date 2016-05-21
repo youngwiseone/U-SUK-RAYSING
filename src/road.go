@@ -10,6 +10,8 @@ import (
 	"grate/game"
 	"grate/graphics"
 	"grate/math/random"
+	"grate/smooth"
+	"grate/game/collision"
 )
 
 type RoadTile struct {
@@ -27,7 +29,7 @@ type Road struct {
 
 const Left, Right = false, true
 
-var NextAngle = random.Number(45)*1/180*π + π/2
+var NextAngle = random.Number(90)*1/180*π + π/2
 var Going = Right
 
 func RandomRoadTile(base RoadTile) RoadTile {
@@ -38,14 +40,14 @@ func RandomRoadTile(base RoadTile) RoadTile {
 		if Going == Right {
 			angle += π/80
 		} else {
-			NextAngle = random.Number(45)*1/180*π + π/2
+			NextAngle = random.Number(90)*1/180*π + π/2
 			Going = Right
 		}
 	} else if base.Angle.F32()+ π/2 > NextAngle.F32() {
 		if Going == Left {
 			angle -= π/80
 		} else {
-			NextAngle = -random.Number(45)*1/180*π + π/2
+			NextAngle = -random.Number(90)*1/180*π + π/2
 			Going = Left
 		}
 	}
@@ -76,12 +78,13 @@ func (road *Road) Init() {
 
 var count = 0
 
-func (road *Road) Travel(speed, angle geom.Number) {
-
+func (road *Road) Travel(pos, speed, angle geom.Number) bool {
+	size := graphics.Image("data/roadtile-1.png").Size
+	
 	var track = road
 	var last *Road
 	
-	if track.Next.Next.Pos.Y().F32() > 0 {
+	if track.Next.Next.Pos.Y().F32() > -size.X().F32() {
 		track.Next.Next = &Road{
 			Next: track.Next.Next,
 			RoadTile: RandomRoadTile(track.Next.Next.RoadTile),
@@ -94,20 +97,34 @@ func (road *Road) Travel(speed, angle geom.Number) {
 		last = road
 		road = road.Next
 		
-		road.Pos += speed*y
+		road.Pos  = smooth.Move(road.Pos,  (geom.Angle(angle+π/2)*speed).Y())
+		
+		roadLeftStart 	:= road.Pos-(size/2-10)*geom.Angle(road.Angle)
+		roadLeftEnd   	:= road.Pos+(size.Y()/2-size.X()/2+10)*geom.Angle(road.Angle)
+		roadRightStart 	:= road.Pos+(size/2-10)*geom.Angle(road.Angle)
+		roadRightEnd   	:= road.Pos+(-size.Y()/2+size.X()/2-10)*geom.Angle(road.Angle)
+		
+		a := collision.LineToCircle(roadLeftStart, roadLeftEnd, pos, 32)
+		b := collision.LineToCircle(roadRightStart, roadRightEnd, pos, 32)
+		
+		if a || b {
+			return true
+		}
 		
 		//WHAT THE HELL, HACK ALERT, DO NOT TRY AND FIGURE THIS OUT!
-		if road.Pos.Y().Int()-road.Pos.X().Int() > game.Height().Int() && road.Pos.X().Int() > 0 {
+		if road.Pos.Y().Int()-size.X().Int() > game.Height().Int() && road.Pos.X().Int() != 0 {
 			road.Next = track.Next.Next
 			road.RoadTile = RandomRoadTile(track.Next.Next.RoadTile)
 			
 			track.Next.Next = road
 			
 			last.Next = nil
-			track.Travel(0, 0)
-			return
+			track.Travel(0, 0, 0)
+			return false
 		}
 	}
+	
+	return false
 }
 
 func (tile *RoadTile) Draw(n geom.Number) {
@@ -117,6 +134,13 @@ func (tile *RoadTile) Draw(n geom.Number) {
 	count++
 	graphics.Image("data/roadtile-"+fmt.Sprint(tile.Type)+".png").
 		DrawRotated(tile.Pos, geom.Angle(tile.Angle))
+	
+	if Debug {
+		graphics.SetColor(graphics.Red)
+		size := graphics.Image("data/roadtile-1.png").Size
+		graphics.Line(tile.Pos-(size/2-10)*geom.Angle(tile.Angle), tile.Pos+(size.Y()/2-size.X()/2+10)*geom.Angle(tile.Angle))
+		graphics.Line(tile.Pos+(size/2-10)*geom.Angle(tile.Angle), tile.Pos+(-size.Y()/2+size.X()/2-10)*geom.Angle(tile.Angle))
+	}
 }
 
 func (road *Road) Draw(n geom.Number) {

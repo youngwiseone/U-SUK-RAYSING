@@ -14,6 +14,8 @@ import (
 var Player = new(Car)
 var RaceTrack = new(Road)
 
+var Debug bool
+
 var ScrollingBackground geom.Number
 
 func init() {
@@ -25,21 +27,34 @@ func load() {
 	graphics.LoadImage("data/road.png")
 	
 	Player.Speed = 0
-	Player.Pos = game.Height()/2 + 400
+	Player.Pos = game.Height()/2 + 500
 	
 	graphics.SetBackgroundColor(graphics.Green)
 
 	RaceTrack.Init()
 	
 	camera.Track(&Player.Pos)
+	
+	input.OnKeyPress(func(key int) {
+		if key == input.KeyTab {
+			Debug = !Debug
+		}
+	})
 }
 
 func update() {
 	if input.KeyIsDown(input.KeyEscape) {
 		game.End()
 	}
+
+	if game.Over {
+		return
+	}
 	Player.Update()
-	RaceTrack.Travel(Player.Speed*game.DeltaTime(), Player.Angle)
+	
+	if RaceTrack.Travel(Player.Pos, Player.Speed, Player.Angle) {
+		game.Over = true
+	}
 	
 	ScrollingBackground = smooth.Move(ScrollingBackground, 1i*Player.Speed)
 	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
@@ -65,6 +80,10 @@ func draw() {
 	camera.Stop()
 	
 	text.Print(0, "Kph:",Player.Speed.Int()/6)	
-		text.PrintCenter("This will be a racing game! (Press ESC to Quit)", count)
+	text.Print(game.Width()-text.CurrentFont().Width("(Press Tab to debug!)"), "(Press Tab to debug!)")	
+	
+	if game.Over {
+		text.PrintCenter("U SUK @ RAYSING!")
+	}
 	
 }
