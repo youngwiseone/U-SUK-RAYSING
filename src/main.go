@@ -21,7 +21,7 @@ func load() {
 	graphics.LoadImage("data/road.png")
 	
 	Player.Speed = 0
-	Player.Pos = 400 + 300*y
+	Player.Pos = game.Height()/2 + 400
 	
 	graphics.SetBackgroundColor(graphics.Green)
 	
