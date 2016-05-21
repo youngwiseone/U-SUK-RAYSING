@@ -3,6 +3,8 @@
 
 package main
 
+import "fmt"
+
 import (
 	"grate/geom"
 	"grate/game"
@@ -11,6 +13,7 @@ import (
 
 type RoadTile struct {
 	Pos, Angle geom.Number
+	Type int
 }
 
 //Doubly Linked List of roadtiles.
@@ -21,8 +24,15 @@ type Road struct {
 	Next *Road
 }
 
+func RandomRoadTile(base RoadTile) RoadTile {
+	return RoadTile {
+		Pos: base.Pos,
+		Type: (base.Type+1)%6,
+	}
+}
+
 func (road *Road) Init() {
-	size := graphics.Image("data/roadtile.png").Size
+	size := graphics.Image("data/roadtile-1.png").Size
 	var track *Road = new(Road)
 	track.Next = &Road{
 			Previous: track,
@@ -41,7 +51,7 @@ func (road *Road) Init() {
 var count = 0
 
 func (road *Road) Travel(speed geom.Number) {
-	size := graphics.Image("data/roadtile.png").Size
+	size := graphics.Image("data/roadtile-1.png").Size
 
 	var track = road
 	var last *Road
@@ -64,7 +74,7 @@ func (road *Road) Travel(speed geom.Number) {
 		//WHAT THE HELL, HACK ALERT, DO NOT TRY AND FIGURE THIS OUT!
 		if road.Pos.Y().Int() > game.Height().Int() && road.Pos.X().Int() > 0 {
 			road.Next = track.Next.Next
-			road.RoadTile = RoadTile{ Pos: track.Next.Next.Pos-size.Y() }
+			road.RoadTile = RandomRoadTile(RoadTile{ Pos: track.Next.Next.Pos-size.Y() })
 			
 			track.Next.Next = road
 			
@@ -80,7 +90,7 @@ func (tile *RoadTile) Draw(n geom.Number) {
 		return
 	}
 	count++
-	graphics.Image("data/roadtile.png").
+	graphics.Image("data/roadtile-"+fmt.Sprint(tile.Type)+".png").
 		DrawRotated(tile.Pos, tile.Angle)
 }
 
