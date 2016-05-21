@@ -38,11 +38,23 @@ func (road *Road) Init() {
 	}
 }
 
+var count = 0
+
 func (road *Road) Travel(speed geom.Number) {
 	size := graphics.Image("data/roadtile.png").Size
 
 	var track = road
 	var last *Road
+	
+	if track.Next.Next.Pos.Y().F32() > 0 {
+		track.Next.Next = &Road{
+			Next: track.Next.Next,
+			RoadTile: RoadTile{ Pos: track.Next.Next.Pos-size.Y() },
+		}
+	}
+	
+	count = 0
+	
 	for road != nil && road.Next != nil {
 		last = road
 		road = road.Next
@@ -63,14 +75,18 @@ func (road *Road) Travel(speed geom.Number) {
 	}
 }
 
-func (tile *RoadTile) Draw() {
+func (tile *RoadTile) Draw(n geom.Number) {
+	if tile.Pos.X() == 0 {
+		return
+	}
+	count++
 	graphics.Image("data/roadtile.png").
 		DrawRotated(tile.Pos, tile.Angle)
 }
 
-func (road *Road) Draw() {
-	road.RoadTile.Draw()
+func (road *Road) Draw(n geom.Number) {
+	road.RoadTile.Draw(n)
 	if road.Next != nil {
-		road.Next.Draw()
+		road.Next.Draw(n+1)
 	}
 }

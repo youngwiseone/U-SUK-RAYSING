@@ -50,11 +50,11 @@ func draw() {
 		//Tile(width+ScrollingBackground-game.Height(), width+game.Height())
 	//graphics.Image("data/road.png").
 		//Tile(width+ScrollingBackground, width+game.Height())
-
-	text.PrintCenter("This will be a racing game! (Press ESC to Quit)")
 	
-	RaceTrack.Draw()
+	RaceTrack.Draw(0)
 	
 	Player.Draw()
+	
+		text.PrintCenter("This will be a racing game! (Press ESC to Quit)", count)
 	
 }
