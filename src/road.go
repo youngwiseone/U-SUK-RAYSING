@@ -116,6 +116,9 @@ func (road *Road) Travel(pos, speed, angle geom.Number) bool {
 			road.Next = track.Next.Next
 			road.RoadTile = RandomRoadTile(track.Next.Next.RoadTile)
 			
+			AddToScene(road.Pos-300-random.Number(500), graphics.Image("data/tree.png"))
+			AddToScene(road.Pos+400+random.Number(500), graphics.Image("data/tree.png"))
+			
 			track.Next.Next = road
 			
 			last.Next = nil

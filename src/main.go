@@ -16,8 +16,6 @@ var RaceTrack = new(Road)
 
 var Debug bool
 
-var ScrollingBackground geom.Number
-
 func init() {
 	game.Fullscreen = true
 }
@@ -29,7 +27,7 @@ func load() {
 	Player.Speed = 0
 	Player.Pos = game.Height()/2 + 500
 	
-	graphics.SetBackgroundColor(graphics.Green)
+	graphics.SetBackgroundColor(graphics.DarkGreen)
 
 	RaceTrack.Init()
 	
@@ -43,6 +41,9 @@ func load() {
 		if game.Over && key == input.KeyR {
 			RaceTrack = new(Road)
 			RaceTrack.Init()
+			
+			Scene = nil
+			
 			Player = new(Car)
 			Player.Pos = game.Height()/2 + 500
 			game.Over = false
@@ -67,14 +68,11 @@ func update() {
 	}
 	Player.Update()
 	
+	UpdateScene(Player.Speed, Player.Angle)
+	
 	if RaceTrack.Travel(Player.Pos, Player.Speed, Player.Angle) {
 		DeathVec = Player.Angle-π/2
 		game.Over = true
-	}
-	
-	ScrollingBackground = smooth.Move(ScrollingBackground, 1i*Player.Speed)
-	if (ScrollingBackground-game.Height()).Y().Int() >= 0 {
-		ScrollingBackground = 0
 	}
 	
 	camera.Update()
@@ -92,6 +90,8 @@ func draw() {
 		RaceTrack.Draw(0)
 	
 		Player.Draw()
+		
+		DrawScene()
 	}
 	camera.Stop()
 	
