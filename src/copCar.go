@@ -5,18 +5,27 @@ import "grate/graphics"
 import "grate/smooth"
 import "grate/math/random"
 
-type copCar struct {
-	Pos,  Angle
+type CopCar struct {
+	Pos,  Angle geom.Number
 }
-var randomSpeed int
 
-func update() {
-	if copCar.Pos.X != car.Pos.X{
-		copCar.angleTo(car.Pos)
-		copCar.Pos.X = smooth.Move(car.Pos.X, randomSpeed)
+var randomSpeed geom.Number
+
+func (copCar *CopCar) Update() {
+	car := Player
+	if copCar.Pos != car.Pos {
+		copCar.Pos.AngleTo(car.Pos)
+		copCar.Pos = smooth.Move(car.Pos, randomSpeed)
 		randomSpeed = random.Number((50)+50)/car.Speed
 	}
-	if copCar.Pos.Y != car.Pos.Y{
-		copCar.Pos.Y = smooth.Move(car.Pos.Y, 10)
+}
+
+func (car *CopCar) Draw() {
+	graphics.Image("data/copcar.png").
+		DrawRotated(car.Pos, geom.Angle(car.Angle))
+	
+	if Debug {
+		graphics.SetColor(graphics.RGBA(0,0,100,50))
+		graphics.Circle(car.Pos, 32, true)
 	}
 }
