@@ -12,6 +12,7 @@ import (
 )
 
 var Player = new(Car)
+var Cop = new(CopCar)
 var RaceTrack = new(Road)
 
 var Debug bool
@@ -26,6 +27,8 @@ func load() {
 	
 	Player.Speed = 0
 	Player.Pos = game.Height()/2 + 500
+	
+	Cop.Pos = game.Height() + 500
 	
 	graphics.SetBackgroundColor(graphics.DarkGreen)
 
@@ -67,6 +70,7 @@ func update() {
 		return
 	}
 	Player.Update()
+	Cop.Update()
 	
 	UpdateScene(Player.Speed, Player.Angle)
 	
@@ -90,6 +94,7 @@ func draw() {
 		RaceTrack.Draw(0)
 	
 		Player.Draw()
+		Cop.Draw()
 		
 		DrawScene()
 	}
