@@ -9,19 +9,16 @@ type CopCar struct {
 	Pos,  Angle geom.Number
 }
 
-var randomSpeed geom.Number
+var randomSpeed geom.Number = 0.5
 
 func (copCar *CopCar) Update() {
 	car := Player
-	if copCar.Pos != car.Pos {
-		copCar.Pos.AngleTo(car.Pos)
-		copCar.Pos = smooth.Move(car.Pos, randomSpeed)
-		randomSpeed = random.Number((50)+50)/car.Speed
-	}
+	copCar.Angle = copCar.Pos.AngleTo(car.Pos)
+	copCar.Pos = smooth.Move(copCar.Pos, geom.Angle(copCar.Angle)*car.Speed*1.1)
 }
 
 func (car *CopCar) Draw() {
-	graphics.Image("data/copcar.png").
+	graphics.Image("data/copCar.png").
 		DrawRotated(car.Pos, geom.Angle(car.Angle))
 	
 	if Debug {
