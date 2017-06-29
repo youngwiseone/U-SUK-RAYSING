@@ -3,7 +3,6 @@ package main
 import "grate/geom"
 import "grate/graphics"
 import "grate/smooth"
-import "grate/math/random"
 
 type CopCar struct {
 	Pos,  Angle geom.Number
